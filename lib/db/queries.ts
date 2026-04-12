@@ -1,5 +1,24 @@
 import pool from "@/lib/db"
 import type { ArtifactRow } from "@/lib/types/artifact"
+import type { DashboardStats } from "@/lib/types/dashboard"
+
+export async function getDashboardStats(): Promise<DashboardStats> {
+  const { rows } = await pool.query(`
+    SELECT
+      (SELECT COUNT(*) FROM artifact) AS total_artifacts,
+      (SELECT COUNT(*) FROM role_family WHERE status = 'active') AS active_role_families,
+      (SELECT COUNT(*) FROM hiring_recommendation WHERE status = 'active') AS active_recommendations,
+      (SELECT COUNT(*) FROM hiring_recommendation WHERE status = 'active' AND priority IN ('high', 'critical')) AS high_priority_count
+  `)
+
+  const row = rows[0]
+  return {
+    totalArtifacts: Number(row.total_artifacts),
+    activeRoleFamilies: Number(row.active_role_families),
+    activeRecommendations: Number(row.active_recommendations),
+    highPriorityCount: Number(row.high_priority_count),
+  }
+}
 
 export async function getAllArtifacts(): Promise<ArtifactRow[]> {
   const { rows } = await pool.query(
