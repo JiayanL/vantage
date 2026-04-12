@@ -2,7 +2,7 @@
 -- Hiring tables + retention stubs
 
 -- Enums
-CREATE TYPE artifact_type AS ENUM ('transcript', 'scorecard', 'doc');
+CREATE TYPE artifact_type AS ENUM ('transcript', 'scorecard', 'rubric');
 CREATE TYPE priority      AS ENUM ('low', 'medium', 'high', 'critical');
 CREATE TYPE rec_status    AS ENUM ('active', 'superseded');
 
