@@ -1,7 +1,9 @@
+import { connection } from "next/server"
 import { getAllArtifacts } from "@/lib/db/queries"
 import { ArtifactsTable } from "@/components/dashboard/artifacts-table"
 
 export default async function ArtifactsPage() {
+  await connection()
   const artifacts = await getAllArtifacts()
 
   return (
