@@ -1,3 +1,4 @@
+import { Telescope } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -21,8 +22,8 @@ export default function DashboardLayout({
       <Sidebar collapsible="icon">
         <SidebarHeader>
           <div className="flex items-center gap-2 px-2 py-1.5">
-            <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-bold">
-              V
+            <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <Telescope className="size-3.5" />
             </div>
             <span className="text-sm font-semibold group-data-[collapsible=icon]:hidden">
               Vantage

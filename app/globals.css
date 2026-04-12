@@ -128,3 +128,54 @@
     @apply font-sans;
   }
 }
+
+@layer components {
+  .artifact-prose {
+    @apply text-sm leading-relaxed text-foreground;
+  }
+  .artifact-prose h1 {
+    @apply text-lg font-semibold mt-4 mb-2;
+  }
+  .artifact-prose h2 {
+    @apply text-base font-semibold mt-3 mb-1.5;
+  }
+  .artifact-prose h3 {
+    @apply text-sm font-semibold mt-2 mb-1;
+  }
+  .artifact-prose p {
+    @apply mb-2;
+  }
+  .artifact-prose ul {
+    @apply list-disc pl-5 mb-2;
+  }
+  .artifact-prose ol {
+    @apply list-decimal pl-5 mb-2;
+  }
+  .artifact-prose li {
+    @apply mb-0.5;
+  }
+  .artifact-prose strong {
+    @apply font-semibold;
+  }
+  .artifact-prose strong.speaker-interviewer {
+    @apply text-blue-600 dark:text-blue-400;
+  }
+  .artifact-prose strong.speaker-candidate {
+    @apply text-emerald-600 dark:text-emerald-400;
+  }
+  .artifact-prose blockquote {
+    @apply border-l-2 border-muted-foreground/30 pl-3 italic text-muted-foreground;
+  }
+  .artifact-prose hr {
+    @apply my-3 border-border;
+  }
+  .artifact-prose table {
+    @apply w-full border-collapse text-sm my-3;
+  }
+  .artifact-prose th {
+    @apply border border-border bg-muted px-3 py-1.5 text-left font-medium;
+  }
+  .artifact-prose td {
+    @apply border border-border px-3 py-1.5;
+  }
+}
