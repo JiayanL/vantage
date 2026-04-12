@@ -1,8 +1,15 @@
 import { StatCards } from "@/components/dashboard/stat-cards"
 import { ChartPlaceholder } from "@/components/dashboard/chart-placeholder"
 import { RecentActivityTable } from "@/components/dashboard/recent-activity-table"
+import { getDashboardStats } from "@/lib/db/queries"
+import { listRecommendations } from "@/lib/services/recommendations"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const [stats, recentRecs] = await Promise.all([
+    getDashboardStats(),
+    listRecommendations({ status: "active", limit: 8 }),
+  ])
+
   return (
     <div className="space-y-6">
       <div>
@@ -11,13 +18,13 @@ export default function DashboardPage() {
           Overview of your hiring and retention pipeline.
         </p>
       </div>
-      <StatCards />
+      <StatCards stats={stats} />
       <div className="grid gap-6 lg:grid-cols-7">
         <div className="lg:col-span-4">
           <ChartPlaceholder />
         </div>
         <div className="lg:col-span-3">
-          <RecentActivityTable />
+          <RecentActivityTable recommendations={recentRecs} />
         </div>
       </div>
     </div>

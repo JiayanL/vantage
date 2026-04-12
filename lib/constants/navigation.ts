@@ -4,6 +4,7 @@ import {
   Briefcase,
   FileText,
   ShieldCheck,
+  ShieldAlert,
   type LucideIcon,
 } from "lucide-react"
 
@@ -41,6 +42,7 @@ export const navigationGroups: NavGroup[] = [
     label: "People",
     items: [
       { title: "Directory", href: "/dashboard/people", icon: Users },
+      { title: "Retention", href: "/dashboard/retention", icon: ShieldAlert },
     ],
   },
 ]

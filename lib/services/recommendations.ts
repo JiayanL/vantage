@@ -39,6 +39,7 @@ type ListRecommendationsFilters = {
   role_family_id?: string
   status?: RecStatus
   priority?: Priority
+  limit?: number
 }
 
 export async function listRecommendations(
@@ -62,7 +63,12 @@ export async function listRecommendations(
   }
 
   const where = conditions.length > 0 ? ` WHERE ${conditions.join(" AND ")}` : ""
-  const query = `${REC_SELECT}${where} ORDER BY hr.generated_at DESC`
+  let query = `${REC_SELECT}${where} ORDER BY hr.generated_at DESC`
+
+  if (filters.limit) {
+    query += ` LIMIT $${idx}`
+    params.push(filters.limit)
+  }
 
   const { rows } = await pool.query(query, params)
   return rows.map((r: Record<string, unknown>) => toRecommendationRow(r))
