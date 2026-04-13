@@ -6,6 +6,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   const { rows } = await pool.query(`
     SELECT
       (SELECT COUNT(*) FROM artifact) AS total_artifacts,
+      (SELECT COUNT(*) FROM artifact WHERE artifact_type = 'transcript') AS interviews_processed,
       (SELECT COUNT(*) FROM role_family WHERE status = 'active') AS active_role_families,
       (SELECT COUNT(*) FROM hiring_recommendation WHERE status = 'active') AS active_recommendations,
       (SELECT COUNT(*) FROM hiring_recommendation WHERE status = 'active' AND priority IN ('high', 'critical')) AS high_priority_count
@@ -14,6 +15,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   const row = rows[0]
   return {
     totalArtifacts: Number(row.total_artifacts),
+    interviewsProcessed: Number(row.interviews_processed),
     activeRoleFamilies: Number(row.active_role_families),
     activeRecommendations: Number(row.active_recommendations),
     highPriorityCount: Number(row.high_priority_count),

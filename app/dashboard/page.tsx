@@ -1,5 +1,5 @@
 import { StatCards } from "@/components/dashboard/stat-cards"
-import { ChartPlaceholder } from "@/components/dashboard/chart-placeholder"
+import { TalentLifecycle } from "@/components/dashboard/talent-lifecycle"
 import { RecentActivityTable } from "@/components/dashboard/recent-activity-table"
 import { getDashboardStats } from "@/lib/db/queries"
 import { listRecommendations } from "@/lib/services/recommendations"
@@ -21,7 +21,7 @@ export default async function DashboardPage() {
       <StatCards stats={stats} />
       <div className="grid gap-6 lg:grid-cols-7">
         <div className="lg:col-span-4">
-          <ChartPlaceholder />
+          <TalentLifecycle />
         </div>
         <div className="lg:col-span-3">
           <RecentActivityTable recommendations={recentRecs} />

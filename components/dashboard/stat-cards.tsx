@@ -1,6 +1,6 @@
 import { StatCard } from "@/components/dashboard/stat-card"
 import type { DashboardStats } from "@/lib/types/dashboard"
-import { FileText, Briefcase, ShieldCheck, AlertTriangle } from "lucide-react"
+import { MessageSquareText, Briefcase, ShieldCheck, AlertTriangle } from "lucide-react"
 
 type StatCardsProps = {
   stats: DashboardStats
@@ -10,12 +10,12 @@ export function StatCards({ stats }: StatCardsProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <StatCard
-        title="Total Artifacts"
-        value={String(stats.totalArtifacts)}
+        title="Interviews Processed"
+        value={String(stats.interviewsProcessed)}
         change=""
         changeType="neutral"
-        description="across all role families"
-        icon={FileText}
+        description="interview transcripts analyzed"
+        icon={MessageSquareText}
       />
       <StatCard
         title="Active Role Families"
