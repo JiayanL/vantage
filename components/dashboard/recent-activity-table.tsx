@@ -46,7 +46,7 @@ export function RecentActivityTable({
     <Card className="h-full">
       <CardHeader>
         <CardTitle>Recent Activity</CardTitle>
-        <CardDescription>Latest hiring recommendations</CardDescription>
+        <CardDescription>Latest hiring calibration recommendations</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
