@@ -67,7 +67,7 @@ export async function getTranscriptsWithRubrics(): Promise<
      LEFT JOIN LATERAL (
        SELECT r.title, r.content
        FROM artifact r
-       WHERE r.artifact_type = 'rubric'
+       WHERE r.artifact_type = 'scorecard'
          AND r.role_family_id = t.role_family_id
          AND RTRIM(REGEXP_REPLACE(r.title, '\\s*(Human-Graded Rubric)\\s*$', '', 'i'))
            = RTRIM(REGEXP_REPLACE(t.title, '\\s*(Transcript)\\s*$', '', 'i'))
