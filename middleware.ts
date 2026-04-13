@@ -6,12 +6,13 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const isLoginPage = pathname === "/login"
+  const isMcpEndpoint = pathname === "/api/mcp"
   const isPublicAsset =
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname === "/icon"
 
-  if (isPublicAsset) {
+  if (isPublicAsset || isMcpEndpoint) {
     return NextResponse.next()
   }
 
