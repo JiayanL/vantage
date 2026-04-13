@@ -27,7 +27,7 @@ export function HiringRecommendationTab({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{rec.headline ?? "Hiring Recommendation"}</CardTitle>
+        <CardTitle>{rec.headline ?? "Interview Calibration Recommendation"}</CardTitle>
         {rec.issue_type && (
           <CardDescription>Issue type: {rec.issue_type}</CardDescription>
         )}

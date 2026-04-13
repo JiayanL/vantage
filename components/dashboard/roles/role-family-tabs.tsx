@@ -14,7 +14,7 @@ export function RoleFamilyTabs({ recommendation }: RoleFamilyTabsProps) {
     <Tabs defaultValue="rubric">
       <TabsList>
         <TabsTrigger value="rubric">Rubric</TabsTrigger>
-        <TabsTrigger value="recommendation">Hiring Recommendation</TabsTrigger>
+        <TabsTrigger value="recommendation">Interview Calibration Recommendation</TabsTrigger>
       </TabsList>
       <TabsContent value="rubric" className="mt-4">
         <RubricTab rubric={recommendation.draft_rubric} />

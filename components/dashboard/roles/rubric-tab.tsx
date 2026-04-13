@@ -1,23 +1,31 @@
+"use client"
+
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { BookOpen } from "lucide-react"
 import type { DraftRubric } from "@/lib/types/recommendation"
 
 type RubricTabProps = {
   rubric: DraftRubric | null
+}
+
+function rubricToMarkdown(rubric: DraftRubric): string {
+  let md = `${rubric.summary}\n\n`
+
+  for (const change of rubric.changes) {
+    md += `### ${change.dimension}\n\n`
+    md += `**Current State:** ${change.current_state}\n\n`
+    md += `**Recommended Change:** ${change.recommended_change}\n\n`
+    md += `**Rationale:** ${change.rationale}\n\n`
+  }
+
+  return md
 }
 
 export function RubricTab({ rubric }: RubricTabProps) {
@@ -41,45 +49,13 @@ export function RubricTab({ rubric }: RubricTabProps) {
           <BookOpen className="size-4" />
           Draft Rubric
         </CardTitle>
-        <CardDescription>{rubric.summary}</CardDescription>
       </CardHeader>
       <CardContent>
-        {rubric.changes.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No rubric changes proposed.
-          </p>
-        ) : (
-          <div className="rounded-lg border border-border overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Dimension</TableHead>
-                  <TableHead>Current State</TableHead>
-                  <TableHead>Recommended Change</TableHead>
-                  <TableHead>Rationale</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rubric.changes.map((change, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="font-medium text-sm">
-                      {change.dimension}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {change.current_state}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {change.recommended_change}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {change.rationale}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+        <div className="prose prose-sm dark:prose-invert max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {rubricToMarkdown(rubric)}
+          </ReactMarkdown>
+        </div>
       </CardContent>
     </Card>
   )

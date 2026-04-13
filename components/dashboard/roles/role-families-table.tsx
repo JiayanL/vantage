@@ -53,7 +53,6 @@ export function RoleFamiliesTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Priority</TableHead>
               <TableHead>Headline</TableHead>
@@ -63,7 +62,7 @@ export function RoleFamiliesTable({
             {roleFamilies.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={4}
                   className="text-center text-muted-foreground py-8"
                 >
                   No role families found.
@@ -79,9 +78,6 @@ export function RoleFamiliesTable({
                     onClick={() => router.push(`/dashboard/roles/${rf.id}`)}
                   >
                     <TableCell className="font-medium">{rf.name}</TableCell>
-                    <TableCell className="max-w-[300px] truncate text-muted-foreground">
-                      {rf.description ?? "\u2014"}
-                    </TableCell>
                     <TableCell>
                       <Badge variant="outline">{rf.status}</Badge>
                     </TableCell>
