@@ -13,7 +13,6 @@ import {
   Layers,
   Shield,
   Heart,
-  ChevronDown,
   type LucideIcon,
 } from "lucide-react"
 
@@ -41,17 +40,6 @@ function LifecycleNode({ icon: Icon, name, description }: { icon: LucideIcon; na
   )
 }
 
-function VerticalConnector() {
-  return (
-    <div className="flex justify-center">
-      <div className="flex flex-col items-center">
-        <div className="h-3 w-px bg-muted-foreground/25" />
-        <ChevronDown className="size-3 -mt-1 text-muted-foreground/40" />
-      </div>
-    </div>
-  )
-}
-
 export function TalentLifecycle() {
   return (
     <Card className="h-full">
@@ -61,12 +49,9 @@ export function TalentLifecycle() {
           Interconnected domains of talent management
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-1">
-        {stages.map((stage, i) => (
-          <div key={stage.name}>
-            <LifecycleNode {...stage} />
-            {i < stages.length - 1 && <VerticalConnector />}
-          </div>
+      <CardContent className="space-y-2">
+        {stages.map((stage) => (
+          <LifecycleNode key={stage.name} {...stage} />
         ))}
       </CardContent>
     </Card>
