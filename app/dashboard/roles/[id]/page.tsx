@@ -34,7 +34,7 @@ export default async function RoleFamilyDetailPage({
 
   const recommendation = recommendations[0] ?? null
   const rubricArtifact = artifacts.find(
-    (a) => a.artifact_type === "scorecard" || a.artifact_type === "rubric"
+    (a) => a.artifact_type === "rubric"
   ) ?? null
 
   return (

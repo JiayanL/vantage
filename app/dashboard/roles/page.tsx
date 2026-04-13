@@ -24,7 +24,7 @@ export default async function RoleFamiliesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Interview Calibration Status
+          Role Families
         </h1>
         <p className="text-sm text-muted-foreground">
           All role families and their current calibration recommendation status.
