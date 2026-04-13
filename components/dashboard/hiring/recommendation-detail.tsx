@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Table,
   TableBody,
@@ -8,14 +10,19 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { FileText, Quote, BookOpen, Compass } from "lucide-react"
+import { cn } from "@/lib/utils"
 import type { RecommendationRow } from "@/lib/types/recommendation"
 
 type RecommendationDetailProps = {
   recommendation: RecommendationRow
+  onEvidenceClick?: (artifactId: string) => void
+  activeArtifactId?: string | null
 }
 
 export function RecommendationDetail({
   recommendation: rec,
+  onEvidenceClick,
+  activeArtifactId,
 }: RecommendationDetailProps) {
   return (
     <div className="space-y-6">
@@ -38,7 +45,7 @@ export function RecommendationDetail({
       {rec.reasoning_summary && (
         <div>
           <h4 className="text-sm font-semibold mb-2">Reasoning</h4>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed break-words">
             {rec.reasoning_summary}
           </p>
         </div>
@@ -63,12 +70,23 @@ export function RecommendationDetail({
             {rec.supporting_evidence.map((ev, i) => (
               <div
                 key={i}
-                className="rounded-lg border border-border bg-background p-3"
+                className={cn(
+                  "rounded-lg border border-border bg-background p-3",
+                  onEvidenceClick &&
+                    "cursor-pointer transition-colors hover:border-primary/50",
+                  activeArtifactId === ev.artifact_id &&
+                    "border-primary bg-primary/5"
+                )}
+                onClick={
+                  onEvidenceClick
+                    ? () => onEvidenceClick(ev.artifact_id)
+                    : undefined
+                }
               >
-                <p className="text-sm italic text-foreground">
+                <p className="text-sm italic text-foreground break-words">
                   &ldquo;{ev.quote}&rdquo;
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-muted-foreground mt-1 break-words">
                   {ev.locator_hint}
                   {ev.artifact_id && (
                     <span className="ml-2 text-xs">
@@ -89,11 +107,11 @@ export function RecommendationDetail({
             <BookOpen className="size-4" />
             Draft Rubric
           </h4>
-          <p className="text-sm text-muted-foreground mb-2">
+          <p className="text-sm text-muted-foreground mb-2 break-words">
             {rec.draft_rubric.summary}
           </p>
           {rec.draft_rubric.changes.length > 0 && (
-            <div className="rounded-lg border border-border overflow-hidden">
+            <div className="rounded-lg border border-border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -106,16 +124,16 @@ export function RecommendationDetail({
                 <TableBody>
                   {rec.draft_rubric.changes.map((change, i) => (
                     <TableRow key={i}>
-                      <TableCell className="font-medium text-sm">
+                      <TableCell className="font-medium text-sm break-words">
                         {change.dimension}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground break-words">
                         {change.current_state}
                       </TableCell>
-                      <TableCell className="text-sm">
+                      <TableCell className="text-sm break-words">
                         {change.recommended_change}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground break-words">
                         {change.rationale}
                       </TableCell>
                     </TableRow>
@@ -134,11 +152,11 @@ export function RecommendationDetail({
             <Compass className="size-4" />
             Draft Guidance
           </h4>
-          <p className="text-sm text-muted-foreground mb-2">
+          <p className="text-sm text-muted-foreground mb-2 break-words">
             {rec.draft_guidance.summary}
           </p>
           {rec.draft_guidance.suggestions.length > 0 && (
-            <div className="rounded-lg border border-border overflow-hidden">
+            <div className="rounded-lg border border-border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -151,16 +169,16 @@ export function RecommendationDetail({
                 <TableBody>
                   {rec.draft_guidance.suggestions.map((suggestion, i) => (
                     <TableRow key={i}>
-                      <TableCell className="font-medium text-sm">
+                      <TableCell className="font-medium text-sm break-words">
                         {suggestion.area}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground break-words">
                         {suggestion.current_state}
                       </TableCell>
-                      <TableCell className="text-sm">
+                      <TableCell className="text-sm break-words">
                         {suggestion.recommended_change}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground break-words">
                         {suggestion.rationale}
                       </TableCell>
                     </TableRow>

@@ -156,6 +156,38 @@ export async function getRoleFamilyArtifacts(
   })) as ArtifactRow[]
 }
 
+export async function getArtifactById(
+  id: string
+): Promise<ArtifactRow | null> {
+  const { rows } = await pool.query(
+    `SELECT
+       a.id,
+       a.role_family_id,
+       rf.name AS role_family_name,
+       a.artifact_type,
+       a.title,
+       a.source_ref,
+       a.content,
+       a.captured_at,
+       a.created_at
+     FROM artifact a
+     JOIN role_family rf ON rf.id = a.role_family_id
+     WHERE a.id = $1`,
+    [id]
+  )
+
+  if (rows.length === 0) return null
+
+  const row = rows[0] as Record<string, unknown>
+  return {
+    ...row,
+    captured_at: row.captured_at
+      ? (row.captured_at as Date).toISOString()
+      : null,
+    created_at: (row.created_at as Date).toISOString(),
+  } as ArtifactRow
+}
+
 // ---------------------------------------------------------------------------
 // Regeneration
 // ---------------------------------------------------------------------------

@@ -6,6 +6,7 @@ import {
   regenerateRoleFamily,
   regenerateAll,
   createArtifact,
+  getArtifactById,
 } from "@/lib/services/recommendations"
 
 const regenerateSchema = z.object({
@@ -43,6 +44,29 @@ export async function regenerateAllAction() {
     return {
       error:
         err instanceof Error ? err.message : "Batch regeneration failed",
+    }
+  }
+}
+
+const artifactIdSchema = z.object({
+  artifactId: z.string().uuid(),
+})
+
+export async function getArtifactAction(artifactId: string) {
+  const parsed = artifactIdSchema.safeParse({ artifactId })
+  if (!parsed.success) {
+    return { error: "Invalid artifact ID" }
+  }
+
+  try {
+    const artifact = await getArtifactById(parsed.data.artifactId)
+    if (!artifact) {
+      return { error: "Artifact not found" }
+    }
+    return { success: true as const, artifact }
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Failed to fetch artifact",
     }
   }
 }
