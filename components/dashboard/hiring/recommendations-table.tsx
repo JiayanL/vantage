@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import {
   Card,
   CardContent,
@@ -18,20 +18,12 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
 import type {
   RecommendationRow,
   RoleFamilyRow,
@@ -57,29 +49,7 @@ export function RecommendationsTable({
   recommendations,
   roleFamilies,
 }: RecommendationsTableProps) {
-  const [priorityFilter, setPriorityFilter] = useState<string>("all")
-  const [confidenceFilter, setConfidenceFilter] = useState<string>("any")
-  const [issueTypeFilter, setIssueTypeFilter] = useState<string>("all")
   const [selectedRec, setSelectedRec] = useState<RecommendationRow | null>(null)
-
-  const issueTypes = useMemo(() => {
-    const types = new Set<string>()
-    for (const r of recommendations) {
-      if (r.issue_type) types.add(r.issue_type)
-    }
-    return Array.from(types).sort()
-  }, [recommendations])
-
-  const filtered = useMemo(() => {
-    return recommendations.filter((r) => {
-      if (priorityFilter !== "all" && r.priority !== priorityFilter) return false
-      if (confidenceFilter !== "any" && r.confidence < Number(confidenceFilter))
-        return false
-      if (issueTypeFilter !== "all" && r.issue_type !== issueTypeFilter)
-        return false
-      return true
-    })
-  }, [recommendations, priorityFilter, confidenceFilter, issueTypeFilter])
 
   return (
     <>
@@ -89,68 +59,23 @@ export function RecommendationsTable({
             <div>
               <CardTitle>Calibration Recommendations</CardTitle>
               <CardDescription>
-                {filtered.length} of {recommendations.length} recommendations
+                {recommendations.length} recommendation{recommendations.length !== 1 && "s"}
               </CardDescription>
             </div>
             <RegenerateAllButton />
           </div>
-
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Select
-              value={priorityFilter}
-              onValueChange={(v) => setPriorityFilter(v ?? "all")}
-            >
-              <SelectTrigger size="sm">
-                <SelectValue placeholder="Priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All priorities</SelectItem>
-                <SelectItem value="critical">Critical</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select
-              value={confidenceFilter}
-              onValueChange={(v) => setConfidenceFilter(v ?? "any")}
-            >
-              <SelectTrigger size="sm">
-                <SelectValue placeholder="Confidence" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Any confidence</SelectItem>
-                <SelectItem value="0.3">&gt; 30%</SelectItem>
-                <SelectItem value="0.5">&gt; 50%</SelectItem>
-                <SelectItem value="0.7">&gt; 70%</SelectItem>
-                <SelectItem value="0.9">&gt; 90%</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {issueTypes.length > 0 && (
-              <Select
-                value={issueTypeFilter}
-                onValueChange={(v) => setIssueTypeFilter(v ?? "all")}
-              >
-                <SelectTrigger size="sm">
-                  <SelectValue placeholder="Issue type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All issue types</SelectItem>
-                  {issueTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
         </CardHeader>
 
-        <CardContent>
-          <Table>
+        <CardContent className="overflow-x-auto">
+          <Table className="table-fixed w-full">
+            <colgroup>
+              <col className="w-[100px]" />
+              <col className="w-[100px]" />
+              <col />
+              <col className="w-[150px]" />
+              <col className="w-[140px]" />
+              <col className="w-[120px]" />
+            </colgroup>
             <TableHeader>
               <TableRow>
                 <TableHead>Priority</TableHead>
@@ -162,17 +87,17 @@ export function RecommendationsTable({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.length === 0 ? (
+              {recommendations.length === 0 ? (
                 <TableRow>
                   <TableCell
                     colSpan={6}
                     className="text-center text-muted-foreground py-8"
                   >
-                    No recommendations match the current filters.
+                    No recommendations found.
                   </TableCell>
                 </TableRow>
               ) : (
-                filtered.map((rec) => (
+                recommendations.map((rec) => (
                   <TableRow
                     key={rec.id}
                     className="cursor-pointer hover:bg-muted/50"
@@ -188,13 +113,13 @@ export function RecommendationsTable({
                         {Math.round(rec.confidence * 100)}%
                       </span>
                     </TableCell>
-                    <TableCell className={cn("max-w-xs font-medium break-words")}>
+                    <TableCell className="font-medium whitespace-normal break-words">
                       {rec.headline ?? "—"}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    <TableCell className="text-muted-foreground whitespace-normal break-words">
                       {rec.role_family_name}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    <TableCell className="text-muted-foreground truncate">
                       {rec.issue_type ?? "—"}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
@@ -216,11 +141,11 @@ export function RecommendationsTable({
       >
         <SheetContent
           side="right"
-          className="data-[side=right]:sm:max-w-6xl overflow-y-auto"
+          className="data-[side=right]:sm:max-w-6xl flex flex-col overflow-hidden"
         >
           {selectedRec && (
             <>
-              <SheetHeader className="border-b border-border pb-4">
+              <SheetHeader className="border-b border-border pb-4 shrink-0">
                 <SheetTitle>{selectedRec.headline ?? "Recommendation"}</SheetTitle>
                 <SheetDescription>
                   {selectedRec.role_family_name}

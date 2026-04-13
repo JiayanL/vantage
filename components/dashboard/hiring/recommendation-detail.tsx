@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
 import { FileText, Quote, BookOpen, Compass } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { RecommendationRow } from "@/lib/types/recommendation"
@@ -55,7 +54,9 @@ export function RecommendationDetail({
       {rec.recommended_action && (
         <div>
           <h4 className="text-sm font-semibold mb-2">Recommended Action</h4>
-          <Badge variant="secondary">{rec.recommended_action}</Badge>
+          <p className="text-sm text-foreground bg-muted rounded-md px-3 py-2 break-words">
+            {rec.recommended_action}
+          </p>
         </div>
       )}
 
@@ -112,28 +113,34 @@ export function RecommendationDetail({
           </p>
           {rec.draft_rubric.changes.length > 0 && (
             <div className="rounded-lg border border-border overflow-x-auto">
-              <Table>
+              <Table className="table-fixed w-full">
+                <colgroup>
+                  <col className="w-[20%]" />
+                  <col className="w-[25%]" />
+                  <col className="w-[30%]" />
+                  <col className="w-[25%]" />
+                </colgroup>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Dimension</TableHead>
-                    <TableHead>Current State</TableHead>
-                    <TableHead>Recommended Change</TableHead>
-                    <TableHead>Rationale</TableHead>
+                    <TableHead className="whitespace-normal">Dimension</TableHead>
+                    <TableHead className="whitespace-normal">Current State</TableHead>
+                    <TableHead className="whitespace-normal">Recommended Change</TableHead>
+                    <TableHead className="whitespace-normal">Rationale</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rec.draft_rubric.changes.map((change, i) => (
                     <TableRow key={i}>
-                      <TableCell className="font-medium text-sm break-words">
+                      <TableCell className="font-medium text-sm whitespace-normal break-words">
                         {change.dimension}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground break-words">
+                      <TableCell className="text-sm text-muted-foreground whitespace-normal break-words">
                         {change.current_state}
                       </TableCell>
-                      <TableCell className="text-sm break-words">
+                      <TableCell className="text-sm whitespace-normal break-words">
                         {change.recommended_change}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground break-words">
+                      <TableCell className="text-sm text-muted-foreground whitespace-normal break-words">
                         {change.rationale}
                       </TableCell>
                     </TableRow>
@@ -157,28 +164,34 @@ export function RecommendationDetail({
           </p>
           {rec.draft_guidance.suggestions.length > 0 && (
             <div className="rounded-lg border border-border overflow-x-auto">
-              <Table>
+              <Table className="table-fixed w-full">
+                <colgroup>
+                  <col className="w-[20%]" />
+                  <col className="w-[25%]" />
+                  <col className="w-[30%]" />
+                  <col className="w-[25%]" />
+                </colgroup>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Area</TableHead>
-                    <TableHead>Current State</TableHead>
-                    <TableHead>Recommended Change</TableHead>
-                    <TableHead>Rationale</TableHead>
+                    <TableHead className="whitespace-normal">Area</TableHead>
+                    <TableHead className="whitespace-normal">Current State</TableHead>
+                    <TableHead className="whitespace-normal">Recommended Change</TableHead>
+                    <TableHead className="whitespace-normal">Rationale</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rec.draft_guidance.suggestions.map((suggestion, i) => (
                     <TableRow key={i}>
-                      <TableCell className="font-medium text-sm break-words">
+                      <TableCell className="font-medium text-sm whitespace-normal break-words">
                         {suggestion.area}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground break-words">
+                      <TableCell className="text-sm text-muted-foreground whitespace-normal break-words">
                         {suggestion.current_state}
                       </TableCell>
-                      <TableCell className="text-sm break-words">
+                      <TableCell className="text-sm whitespace-normal break-words">
                         {suggestion.recommended_change}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground break-words">
+                      <TableCell className="text-sm text-muted-foreground whitespace-normal break-words">
                         {suggestion.rationale}
                       </TableCell>
                     </TableRow>

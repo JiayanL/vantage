@@ -53,11 +53,11 @@ export function RecommendationSheetContent({
     <div
       className={
         showTranscript
-          ? "grid grid-cols-1 lg:grid-cols-2 gap-6 px-4 pb-4"
-          : "px-4 pb-4"
+          ? "flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-0 overflow-hidden"
+          : "flex-1 min-h-0 overflow-y-auto"
       }
     >
-      <div className="min-w-0">
+      <div className={showTranscript ? "min-w-0 overflow-y-auto px-4 pb-4" : "min-w-0 px-4 pb-4"}>
         <RecommendationDetail
           recommendation={recommendation}
           onEvidenceClick={handleEvidenceClick}
@@ -66,7 +66,7 @@ export function RecommendationSheetContent({
       </div>
 
       {showTranscript && (
-        <div className="min-w-0 lg:border-l lg:border-border lg:pl-6">
+        <div className="min-w-0 overflow-y-auto lg:border-l lg:border-border lg:pl-6 pr-4 pb-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
               Source Transcript
