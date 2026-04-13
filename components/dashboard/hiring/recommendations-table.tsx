@@ -32,23 +32,13 @@ import {
 import { ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type {
-  Priority,
   RecommendationRow,
   RoleFamilyRow,
 } from "@/lib/types/recommendation"
+import { priorityVariant } from "@/lib/constants/priority"
 import { RegenerateButton } from "@/components/dashboard/hiring/regenerate-button"
 import { RegenerateAllButton } from "@/components/dashboard/hiring/regenerate-all-button"
 import { RecommendationDetail } from "@/components/dashboard/hiring/recommendation-detail"
-
-const priorityVariant: Record<
-  Priority,
-  "destructive" | "default" | "secondary" | "outline"
-> = {
-  critical: "destructive",
-  high: "default",
-  medium: "secondary",
-  low: "outline",
-}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
