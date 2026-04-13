@@ -9,7 +9,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { navigationItems } from "@/lib/constants/navigation"
+import {
+  isNavigationItemActive,
+  navigationItems,
+} from "@/lib/constants/navigation"
 
 export function SidebarNav() {
   const pathname = usePathname()
@@ -21,10 +24,7 @@ export function SidebarNav() {
           {navigationItems.map((item) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
-                isActive={
-                  pathname === item.href ||
-                  pathname.startsWith(item.href + "/")
-                }
+                isActive={isNavigationItemActive(item, pathname)}
                 tooltip={item.title}
                 render={<Link href={item.href} />}
               >
