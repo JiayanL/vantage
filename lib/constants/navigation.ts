@@ -1,10 +1,8 @@
 import {
   LayoutDashboard,
-  Users,
   Briefcase,
   FileText,
   ShieldCheck,
-  ShieldAlert,
   type LucideIcon,
 } from "lucide-react"
 
@@ -30,19 +28,12 @@ export const navigationGroups: NavGroup[] = [
     label: "Hiring",
     items: [
       { title: "Role Families", href: "/dashboard/roles", icon: Briefcase },
-      { title: "Artifacts", href: "/dashboard/artifacts", icon: FileText },
+      { title: "Transcripts", href: "/dashboard/artifacts", icon: FileText },
       {
         title: "Recommendations",
         href: "/dashboard/hiring",
         icon: ShieldCheck,
       },
-    ],
-  },
-  {
-    label: "People",
-    items: [
-      { title: "Directory", href: "/dashboard/people", icon: Users },
-      { title: "Retention", href: "/dashboard/retention", icon: ShieldAlert },
     ],
   },
 ]

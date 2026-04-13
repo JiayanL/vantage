@@ -1,5 +1,5 @@
 import pool from "@/lib/db"
-import type { ArtifactRow } from "@/lib/types/artifact"
+import type { ArtifactRow, TranscriptWithRubric } from "@/lib/types/artifact"
 import type { DashboardStats } from "@/lib/types/dashboard"
 
 export async function getDashboardStats(): Promise<DashboardStats> {
@@ -46,4 +46,44 @@ export async function getAllArtifacts(): Promise<ArtifactRow[]> {
       : null,
     created_at: (row.created_at as Date).toISOString(),
   })) as ArtifactRow[]
+}
+
+export async function getTranscriptsWithRubrics(): Promise<
+  TranscriptWithRubric[]
+> {
+  const { rows } = await pool.query(
+    `SELECT
+       t.id,
+       t.role_family_id,
+       rf.name AS role_family_name,
+       t.title,
+       t.content,
+       t.captured_at,
+       t.created_at,
+       r.title   AS matched_rubric_title,
+       r.content AS matched_rubric_content
+     FROM artifact t
+     JOIN role_family rf ON rf.id = t.role_family_id
+     LEFT JOIN LATERAL (
+       SELECT r.title, r.content
+       FROM artifact r
+       WHERE r.artifact_type = 'scorecard'
+         AND r.role_family_id = t.role_family_id
+         AND RTRIM(REGEXP_REPLACE(r.title, '\\s*(Human-Graded Rubric)\\s*$', '', 'i'))
+           = RTRIM(REGEXP_REPLACE(t.title, '\\s*(Transcript)\\s*$', '', 'i'))
+       LIMIT 1
+     ) r ON TRUE
+     WHERE t.artifact_type = 'transcript'
+     ORDER BY t.captured_at DESC NULLS LAST, t.created_at DESC`
+  )
+
+  return rows.map((row: Record<string, unknown>) => ({
+    ...row,
+    captured_at: row.captured_at
+      ? (row.captured_at as Date).toISOString()
+      : null,
+    created_at: (row.created_at as Date).toISOString(),
+    matched_rubric_title: row.matched_rubric_title ?? null,
+    matched_rubric_content: row.matched_rubric_content ?? null,
+  })) as TranscriptWithRubric[]
 }
