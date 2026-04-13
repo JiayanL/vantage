@@ -1,21 +1,20 @@
 import { connection } from "next/server"
-import { getAllArtifacts } from "@/lib/db/queries"
-import { ArtifactsTable } from "@/components/dashboard/artifacts-table"
+import { getTranscriptsWithRubrics } from "@/lib/db/queries"
+import { TranscriptsTable } from "@/components/dashboard/transcripts-table"
 
-export default async function ArtifactsPage() {
+export default async function TranscriptsPage() {
   await connection()
-  const artifacts = await getAllArtifacts()
+  const transcripts = await getTranscriptsWithRubrics()
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Artifacts</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Transcripts</h1>
         <p className="text-sm text-muted-foreground">
-          Interview transcripts, scorecards, and rubrics across all role
-          families.
+          Interviewer transcripts across all role families.
         </p>
       </div>
-      <ArtifactsTable artifacts={artifacts} />
+      <TranscriptsTable transcripts={transcripts} />
     </div>
   )
 }
