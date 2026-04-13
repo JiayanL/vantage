@@ -24,10 +24,10 @@ export default async function RoleFamiliesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Role Families
+          Interview Calibration Status
         </h1>
         <p className="text-sm text-muted-foreground">
-          All role families and their current hiring recommendation status.
+          All role families and their current calibration recommendation status.
         </p>
       </div>
       <RoleFamiliesTable

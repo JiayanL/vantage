@@ -17,12 +17,39 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Briefcase } from "lucide-react"
+import {
+  Briefcase,
+  Code,
+  PenTool,
+  BarChart3,
+  Users,
+  Megaphone,
+  Settings,
+  type LucideIcon,
+} from "lucide-react"
 import { priorityVariant } from "@/lib/constants/priority"
 import type {
   RecommendationRow,
   RoleFamilyRow,
 } from "@/lib/types/recommendation"
+
+const ROLE_ICON_MAP: Record<string, LucideIcon> = {
+  engineering: Code,
+  design: PenTool,
+  data: BarChart3,
+  product: Briefcase,
+  people: Users,
+  marketing: Megaphone,
+  operations: Settings,
+}
+
+function getRoleIcon(name: string): LucideIcon {
+  const lower = name.toLowerCase()
+  for (const [keyword, icon] of Object.entries(ROLE_ICON_MAP)) {
+    if (lower.includes(keyword)) return icon
+  }
+  return Briefcase
+}
 
 type RoleFamiliesTableProps = {
   roleFamilies: RoleFamilyRow[]
@@ -53,7 +80,6 @@ export function RoleFamiliesTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Priority</TableHead>
               <TableHead>Headline</TableHead>
             </TableRow>
@@ -62,7 +88,7 @@ export function RoleFamiliesTable({
             {roleFamilies.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={4}
+                  colSpan={3}
                   className="text-center text-muted-foreground py-8"
                 >
                   No role families found.
@@ -71,15 +97,18 @@ export function RoleFamiliesTable({
             ) : (
               roleFamilies.map((rf) => {
                 const rec = recommendationsByFamilyId[rf.id]
+                const Icon = getRoleIcon(rf.name)
                 return (
                   <TableRow
                     key={rf.id}
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => router.push(`/dashboard/roles/${rf.id}`)}
                   >
-                    <TableCell className="font-medium">{rf.name}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{rf.status}</Badge>
+                    <TableCell className="font-medium">
+                      <span className="flex items-center gap-2">
+                        <Icon className="size-4 text-muted-foreground shrink-0" />
+                        {rf.name}
+                      </span>
                     </TableCell>
                     <TableCell>
                       {rec ? (

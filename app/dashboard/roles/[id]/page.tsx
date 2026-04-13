@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { priorityVariant } from "@/lib/constants/priority"
 import {
   getRoleFamilyById,
+  getRoleFamilyArtifacts,
   listRecommendations,
 } from "@/lib/services/recommendations"
 import { RoleFamilyTabs } from "@/components/dashboard/roles/role-family-tabs"
@@ -21,9 +22,10 @@ export default async function RoleFamilyDetailPage({
   const { id } = await params
   await connection()
 
-  const [roleFamily, recommendations] = await Promise.all([
+  const [roleFamily, recommendations, artifacts] = await Promise.all([
     getRoleFamilyById(id),
     listRecommendations({ role_family_id: id, status: "active", limit: 1 }),
+    getRoleFamilyArtifacts(id),
   ])
 
   if (!roleFamily) {
@@ -31,6 +33,9 @@ export default async function RoleFamilyDetailPage({
   }
 
   const recommendation = recommendations[0] ?? null
+  const rubricArtifact = artifacts.find(
+    (a) => a.artifact_type === "scorecard" || a.artifact_type === "rubric"
+  ) ?? null
 
   return (
     <div className="space-y-6">
@@ -58,7 +63,7 @@ export default async function RoleFamilyDetailPage({
       </div>
 
       {recommendation ? (
-        <RoleFamilyTabs recommendation={recommendation} />
+        <RoleFamilyTabs recommendation={recommendation} rubricArtifact={rubricArtifact} />
       ) : (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12 text-center">
