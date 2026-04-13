@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { readdir, readFile } from "fs/promises";
-import { join } from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
@@ -20,7 +21,7 @@ async function migrate() {
     );
     const alreadyRan = new Set(applied.map((r: { filename: string }) => r.filename));
 
-    const dir = join(__dirname, "migrations");
+    const dir = join(dirname(fileURLToPath(import.meta.url)), "migrations");
     const files = (await readdir(dir)).filter((f) => f.endsWith(".sql")).sort();
 
     for (const file of files) {

@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vantage
 
-## Getting Started
+## Project overview
 
-First, run the development server:
+Vantage is a Next.js 16 hiring dashboard backed by Postgres. It stores interview artifacts, role families, and AI-generated hiring recommendations, then surfaces them in the app and through a remote MCP endpoint.
+
+The MCP endpoint lives at `/api/mcp` and uses bearer-token auth backed by the `mcp_tokens` table. Tokens are stored as SHA-256 hashes only. The endpoint exposes three read-only tools:
+
+- `list_hiring_recommendations`
+- `get_recommendation`
+- `list_role_families`
+
+Every tool call is written to `mcp_call_log` with the caller token, tool name, arguments, and timestamp.
+
+## Local dev setup
+
+Prerequisites:
+
+- Node.js `20.9+` or `22.x`
+- `npm`
+- A Postgres or Neon `DATABASE_URL`
+
+Create `.env` from `.env.example` and set:
+
+- `DATABASE_URL`
+- `OPENAI_API_KEY`
+- `CRON_SECRET`
+
+Install dependencies, run migrations, and start the app:
 
 ```bash
+npm install
+npm run migrate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build verification:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Generate a bearer token manually with a one-off command and store the plaintext in your password manager immediately:
 
-## Learn More
+```bash
+node --env-file=.env --experimental-strip-types --input-type=module <<'EOF'
+import crypto from "node:crypto"
 
-To learn more about Next.js, take a look at the following resources:
+import pool from "./lib/db.ts"
+import { hashSecret } from "./lib/auth.ts"
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+const token = crypto.randomBytes(32).toString("hex")
+const tokenHash = await hashSecret(token)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+await pool.query(
+  "INSERT INTO mcp_tokens (token_hash, name, scopes) VALUES ($1, $2, $3)",
+  [tokenHash, "Codex local", ["recommendations:read"]]
+)
 
-## Deploy on Vercel
+console.log(token)
+await pool.end()
+EOF
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you need to revoke a token later:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```sql
+UPDATE mcp_tokens
+SET revoked_at = now()
+WHERE name = 'Codex local';
+```
+
+## Deployment
+
+Deploy the app to Vercel the same way as the dashboard. The MCP endpoint is served by the app deployment, so the public server URL is:
+
+```text
+https://your-deployment.example.com/api/mcp
+```
+
+Before using the deployed MCP endpoint:
+
+1. Add the same environment variables in Vercel: `DATABASE_URL`, `OPENAI_API_KEY`, and `CRON_SECRET`.
+2. Run `npm run migrate` against the production database.
+3. Insert at least one hashed MCP token into `mcp_tokens`.
+4. Verify the deployed endpoint with a bearer-authenticated MCP client before handing it to other users.
+
+The dashboard cookie middleware already allows `/api/mcp` through, so MCP clients can authenticate with bearer tokens instead of the browser login cookie.
+
+## MCP client configuration
+
+Sample `codex_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "vantage-hiring": {
+      "type": "http",
+      "url": "https://your-deployment.example.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_MCP_TOKEN"
+      }
+    }
+  }
+}
+```
+
+Codex config snippet for `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.vantage_hiring]
+enabled = true
+type = "http"
+url = "https://your-deployment.example.com/api/mcp"
+
+  [mcp_servers.vantage_hiring.http_headers]
+  Authorization = "Bearer YOUR_MCP_TOKEN"
+```
+
+After adding the server, a useful smoke-test prompt is:
+
+```text
+What are the highest-priority hiring issues right now?
+```
+
+The MCP server should answer that by calling `list_hiring_recommendations`, and the call should appear in `mcp_call_log`.
