@@ -25,7 +25,10 @@ export function SidebarNav() {
               {group.items.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
-                    isActive={pathname === item.href}
+                    isActive={
+                      pathname === item.href ||
+                      pathname.startsWith(item.href + "/")
+                    }
                     tooltip={item.title}
                     render={<Link href={item.href} />}
                   >

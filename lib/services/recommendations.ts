@@ -103,6 +103,29 @@ export async function listRoleFamilies(): Promise<RoleFamilyRow[]> {
   }))
 }
 
+export async function getRoleFamilyById(
+  id: string
+): Promise<RoleFamilyRow | null> {
+  const { rows } = await pool.query(
+    `SELECT id, name, description, status, metadata_json, created_at
+     FROM role_family
+     WHERE id = $1`,
+    [id]
+  )
+
+  if (rows.length === 0) return null
+
+  const row = rows[0] as Record<string, unknown>
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    description: (row.description as string) ?? null,
+    status: row.status as string,
+    metadata_json: row.metadata_json ?? null,
+    created_at: (row.created_at as Date).toISOString(),
+  }
+}
+
 export async function getRoleFamilyArtifacts(
   roleFamilyId: string
 ): Promise<ArtifactRow[]> {
